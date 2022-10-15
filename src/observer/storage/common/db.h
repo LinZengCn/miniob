@@ -33,6 +33,8 @@ public:
 
   RC create_table(const char *table_name, int attribute_count, const AttrInfo *attributes);
 
+  RC drop_table(const char *table_name);
+
   Table *find_table(const char *table_name) const;
 
   const char *name() const;
@@ -47,7 +49,7 @@ private:
 private:
   std::string name_;
   std::string path_;
-  std::unordered_map<std::string, Table *> opened_tables_;
+  std::unordered_map<std::string, Table *> opened_tables_; // 有db中所有的<table_name, table*>
 };
 
 #endif  // __OBSERVER_STORAGE_COMMON_DB_H__

@@ -48,6 +48,18 @@ RC BplusTreeIndex::create(const char *file_name, const IndexMeta &index_meta, co
   return RC::SUCCESS;
 }
 
+RC BplusTreeIndex::drop()
+{
+  if (inited_) {
+    LOG_INFO("Begin to drop index, index:%s, field:%s",
+        index_meta_.name(), index_meta_.field());
+    index_handler_.drop();
+    inited_ = false;
+  }
+  LOG_INFO("Successfully drop index.");
+  return RC::SUCCESS;
+}
+
 RC BplusTreeIndex::open(const char *file_name, const IndexMeta &index_meta, const FieldMeta &field_meta)
 {
   if (inited_) {

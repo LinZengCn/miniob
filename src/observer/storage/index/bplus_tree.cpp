@@ -870,7 +870,7 @@ RC BplusTreeHandler::open(const char *file_name)
 }
 
 RC BplusTreeHandler::close()
-{
+{ 
   if (disk_buffer_pool_ != nullptr) {
 
     disk_buffer_pool_->close_file(); // TODO
@@ -879,6 +879,21 @@ RC BplusTreeHandler::close()
     mem_pool_item_ = nullptr;
   }
 
+  disk_buffer_pool_ = nullptr;
+  return RC::SUCCESS;
+}
+
+RC BplusTreeHandler::drop()
+{
+  RC rc = RC::SUCCESS;
+  if (disk_buffer_pool_ != nullptr) {
+    
+    disk_buffer_pool_->close_file();
+    int remove_ret = ::remove(disk_buffer_pool_->get_file_name().c_str());
+
+    delete mem_pool_item_;
+    mem_pool_item_ = nullptr;
+  }
   disk_buffer_pool_ = nullptr;
   return RC::SUCCESS;
 }

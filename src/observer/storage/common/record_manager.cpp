@@ -273,6 +273,12 @@ void RecordFileHandler::close()
   }
 }
 
+void RecordFileHandler::destory()
+{
+  disk_buffer_pool_->close_file();
+  close();
+}
+
 RC RecordFileHandler::insert_record(const char *data, int record_size, RID *rid)
 {
   RC ret = RC::SUCCESS;

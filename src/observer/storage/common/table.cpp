@@ -53,7 +53,7 @@ Table::~Table()
 RC Table::create(
     const char *path, const char *name, const char *base_dir, int attribute_count, const AttrInfo attributes[])
 {
-
+  // 判断参数合法性
   if (common::is_blank(name)) {
     LOG_WARN("Name cannot be empty");
     return RC::INVALID_ARGUMENT;
@@ -117,6 +117,33 @@ RC Table::create(
   LOG_INFO("Successfully create table %s:%s", base_dir, name);
   return rc;
 }
+
+RC Table::drop(const char *path, const char *name, const char *base_dir)
+{
+  LOG_INFO("Begin to drop table %s:%s", base_dir, name);
+
+  RC rc = RC::SUCCESS;
+  // destory indexes
+  for (auto index : indexes_) {
+    index->drop();
+  }
+
+  // destory record handler
+  record_handler_->destory();
+  delete record_handler_;
+  record_handler_ = nullptr;
+
+  // destory buffer pool and remove data file
+  std::string data_file = table_data_file(base_dir, name);
+  BufferPoolManager &bpm = BufferPoolManager::instance();
+  rc = bpm.remove_file(data_file.c_str());
+
+  // 删除表文件
+  int remove_ret = ::remove(path);
+  return rc;
+
+}
+
 
 RC Table::open(const char *meta_file, const char *base_dir)
 {
