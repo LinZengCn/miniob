@@ -33,9 +33,9 @@ class BufferPoolManager;
 class DiskBufferPool;
 
 //
-#define BP_INVALID_PAGE_NUM (-1)
-#define BP_PAGE_SIZE (1 << 13)
-#define BP_PAGE_DATA_SIZE (BP_PAGE_SIZE - sizeof(PageNum))
+#define BP_INVALID_PAGE_NUM (-1) // 无效的PAGE_NUM
+#define BP_PAGE_SIZE (1 << 13) // 8KB
+#define BP_PAGE_DATA_SIZE (BP_PAGE_SIZE - sizeof(PageNum)) // 每个page存储数据的空间
 #define BP_FILE_SUB_HDR_SIZE (sizeof(BPFileSubHeader))
 #define BP_BUFFER_SIZE 256
 
@@ -55,7 +55,8 @@ struct Page {
 struct BPFileHeader {
   int32_t page_count;        //! 当前文件一共有多少个页面
   int32_t allocated_pages;   //! 已经分配了多少个页面
-  char    bitmap[0];         //! 页面分配位图, 第0个页面(就是当前页面)，总是1
+  // 柔性数组成员
+  char    bitmap[0];         //! 页面分配位图, 第0个页面(就是当前页面)，总是1 
 
   /**
    * 能够分配的最大的页面个数，即bitmap的字节数 乘以8
@@ -258,7 +259,6 @@ public:
   ~BufferPoolManager();
 
   RC create_file(const char *file_name);
-  RC remove_file(const char *file_name);
   RC open_file(const char *file_name, DiskBufferPool *&bp);
   RC close_file(const char *file_name);
 

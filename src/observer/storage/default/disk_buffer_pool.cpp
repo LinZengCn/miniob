@@ -198,7 +198,7 @@ RC DiskBufferPool::close_file()
   }
   LOG_INFO("Successfully close file %d:%s.", file_desc_, file_name_.c_str());
   file_desc_ = -1;
-
+  LOG_INFO("DEBUG , record file : %s.", file_name_.c_str());
   bp_manager_.close_file(file_name_.c_str());
   return RC::SUCCESS;
 }
@@ -570,13 +570,6 @@ RC BufferPoolManager::create_file(const char *file_name)
   return RC::SUCCESS;
 }
 
-RC BufferPoolManager::remove_file(const char *file_name)
-{
-  RC rc = close_file(file_name);
-
-  int remove_ret = ::remove(file_name);
-  return rc;
-}
 
 RC BufferPoolManager::open_file(const char *_file_name, DiskBufferPool *& _bp)
 {
@@ -600,7 +593,7 @@ RC BufferPoolManager::open_file(const char *_file_name, DiskBufferPool *& _bp)
   _bp = bp;
   return RC::SUCCESS;
 }
-
+// 从bpmanager中删除指定名字的 bufferpool 
 RC BufferPoolManager::close_file(const char *_file_name)
 {
   std::string file_name(_file_name);

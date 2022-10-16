@@ -165,7 +165,6 @@ void ExecuteStage::handle_request(common::StageEvent *event)
     case SCF_DESC_TABLE: {
       do_desc_table(sql_event);
     } break;
-
     case SCF_DROP_TABLE: {
       do_drop_table(sql_event);
     } break;

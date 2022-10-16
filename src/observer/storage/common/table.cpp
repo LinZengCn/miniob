@@ -124,24 +124,21 @@ RC Table::drop(const char *path, const char *name, const char *base_dir)
 
   RC rc = RC::SUCCESS;
   // destory indexes
+  LOG_DEBUG("start drop index.");
   for (auto index : indexes_) {
     index->drop();
   }
 
   // destory record handler
+  LOG_DEBUG("start drop record_handler.");
   record_handler_->destory();
   delete record_handler_;
   record_handler_ = nullptr;
 
-  // destory buffer pool and remove data file
-  std::string data_file = table_data_file(base_dir, name);
-  BufferPoolManager &bpm = BufferPoolManager::instance();
-  rc = bpm.remove_file(data_file.c_str());
 
   // 删除表文件
-  int remove_ret = ::remove(path);
+  std::remove(path);
   return rc;
-
 }
 
 

@@ -274,8 +274,9 @@ void RecordFileHandler::close()
 }
 
 void RecordFileHandler::destory()
-{
-  disk_buffer_pool_->close_file();
+{ 
+  auto file = disk_buffer_pool_->get_file_name();
+  std::remove(file.c_str());
   close();
 }
 

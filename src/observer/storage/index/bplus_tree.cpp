@@ -885,12 +885,13 @@ RC BplusTreeHandler::close()
 
 RC BplusTreeHandler::drop()
 {
-  RC rc = RC::SUCCESS;
   if (disk_buffer_pool_ != nullptr) {
-    
+    std::string index_file_path = disk_buffer_pool_->get_file_name();
     disk_buffer_pool_->close_file();
-    int remove_ret = ::remove(disk_buffer_pool_->get_file_name().c_str());
-
+    int remove_ret = ::remove(index_file_path.c_str());
+    if (remove_ret != 0) {
+      LOG_WARN("remove: %s failed", index_file_path);
+    }
     delete mem_pool_item_;
     mem_pool_item_ = nullptr;
   }
